@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+
+	<!-- 注解扫描包 -->
+	<context:component-scan base-package="com.jk" />
+	<!-- 开启注解 -->
+	<mvc:annotation-driven />
+	<mvc:default-servlet-handler/>
+	<!--上文件上传解析-->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!--文件的最大上传大小-->
+		<property name="maxUploadSize" value="10000000"/>
+	</bean>
+	<!--
+                               配置spring中的视图解析器 能够让springmvc像struts2一样跳转页面
+                               定义跳转的文件的前后缀 ，视图模式配置-->
+	<!-- 这里的配置我的理解是自动给后面action的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!--prefix 前缀
+            suffix 后缀
+                                      通过配置路径的前缀和后缀然后再和springMVC控制层返回的字符串 拼接成完整的路径进行跳转
+                                       假设controller方法return "test"字符串 则拼接后的路径为
+            /WEB-INF/view/test.jsp
+        -->
+		<property name="prefix" value="/"/>
+		<property name="suffix" value=".jsp" />
+		<property name="order" value="1"/>
+		<property name="contentType" value="text/html;charset=utf-8" />
+	</bean>
+	<!-- 配置一个拦截器集合-->
+	<!--<mvc:interceptors>
+		 <mvc:interceptor>
+			<mvc:mapping path="/"/>
+			<bean class="com.jk.controller.interceptor.MyInterceptor"/>
+		</mvc:interceptor>
+		 <mvc:interceptor>
+			<mvc:mapping path="/"/>
+
+			<bean class="com.jk.controller.interceptor.PowerInterceptor"/>
+		 </mvc:interceptor>
+
+	</mvc:interceptors>-->
+	<!-- ===================================================== -->
+	<!-- ViewResolver For FreeMarker -->
+	<!-- ===================================================== -->
+	<bean id="freemarkerResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="order" value="0" />
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".ftl" />
+		<property name="contentType" value="text/html;charset=utf-8" />
+		<property name="viewClass">
+			<value>org.springframework.web.servlet.view.freemarker.FreeMarkerView</value>
+		</property>
+	</bean>
+	<!-- =====================================================-->
+	<!-- ViewResolver For FreeMarkerConfigurer-->
+	 <!--=====================================================-->
+	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath">
+			<value>/</value>
+		</property>
+		<property name="freemarkerSettings"><!-- &lt;!&ndash;设置FreeMarker环境属性&ndash;&gt;-->
+			<props>
+				<prop key="template_update_delay">5</prop><!--&lt;!&ndash;刷新模板的周期，单位为秒 &ndash;&gt;-->
+				<prop key="default_encoding">UTF-8</prop><!--&lt;!&ndash;模板的编码格式&ndash;&gt;-->
+				<prop key="locale">UTF-8</prop><!--&lt;!&ndash;本地化设置&ndash;&gt;-->
+				<prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+				<prop key="time_format">HH:mm:ss</prop>
+				<prop key="number_format">0.####</prop>
+				<prop key="boolean_format">true,false</prop>
+				<prop key="whitespace_stripping">true</prop>
+				<prop key="tag_syntax">auto_detect</prop>
+				<prop key="url_escaping_charset">UTF-8</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- 定义跳转的文件的前后缀 ，视图模式配置-->
+
+	<!--<bean id="viewResolver"
+		  class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
+		<!--这里的配置我的理解是自动给后面action的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->
+	<!--	<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+-->
+
+
+</beans>
